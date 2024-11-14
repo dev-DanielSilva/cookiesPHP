@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="produto">
                     <img src="assets/barraReta.png" alt="">
                     <p>Barra Reta</p>
-                    <input type="checkbox" name="produtos[barraReta]" value="120.00">
+                    <input type="checkbox" name="produtos[barrareta]" value="120.00">
                 </div>
                 <div class="produto">
                     <img src="assets/halter.png" alt="">
@@ -54,12 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="produto">
                     <img src="assets/barraFixa.png" alt="">
                     <p>Barra Fixa</p>
-                    <input type="checkbox" name="produtos[barraFixa]" value="150.00">
+                    <input type="checkbox" name="produtos[barrafixa]" value="150.00">
                 </div>
             </div>
             <div class="button-container">
                 <button type="submit">Adicionar ao Carrinho</button>
             </div>
+            
         </form>
     </main>
     <footer>
