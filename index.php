@@ -1,71 +1,53 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    foreach ($_POST['produtos'] as $produto => $valor) {
-        setcookie($produto, $valor, time() + 20);
+// Verifica se o formulário foi enviado
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Substitua com as credenciais de login corretas e com a senha criptografada usando MD5
+    $usuarioCorreto = 'exemplo@gmail.com';
+    $senhaCorreta = md5('123'); // senha em MD5
+
+    // Obtém os valores do formulário
+    $email = $_POST['e-mail'];
+    $senha = md5($_POST['senha']); // Criptografa a senha em MD5
+
+    if ($email === $usuarioCorreto && $senha === $senhaCorreta) {
+
+        header('Location: select.php');
+        exit();
+    } else {
+        // Redireciona de volta para o login com uma mensagem de erro
+        header('Location: index.php?error=1');
+        exit();
     }
-    header("Location: carrinho.php");
-    exit;
 }
 ?>
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/style.css">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Manipulação de Imagens com PHP</title>
 </head>
 
 <body>
-    <nav>
-        <div class="navbar">
-            <div class="logo">
-                <img src="assets/logo.png" alt="">
-            </div>
-            <h1>IRON FIT</h1>
+    <div class="container">
+        <div class="logo">
+            <img src="assets/icon.png" alt="Imagem de login" class="capa" style="width: 300px;">
         </div>
-    </nav>
-    <main>
-        <h1>Produtos</h1>
-        <form method="POST" action="index.php">
-            <div id="produtos">
-                <!-- Produtos individuais -->
-                <div class="produto">
-                    <img src="assets/anilhas.png" alt="">
-                    <p>Anilhas</p>
-                    <input type="checkbox" name="produtos[anilhas]" value="250.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/barraReta.png" alt="">
-                    <p>Barra Reta</p>
-                    <input type="checkbox" name="produtos[barraReta]" value="120.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/halter.png" alt="">
-                    <p>Kit Halteres</p>
-                    <input type="checkbox" name="produtos[halter]" value="200.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/rack.png" alt="">
-                    <p>Rack</p>
-                    <input type="checkbox" name="produtos[rack]" value="500.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/barraFixa.png" alt="">
-                    <p>Barra Fixa</p>
-                    <input type="checkbox" name="produtos[barraFixa]" value="150.00">
-                </div>
-            </div>
-            <div class="button-container">
-                <button type="submit">Adicionar ao Carrinho</button>
-            </div>
-        </form>
-    </main>
-    <footer>
-        <p>&copy; 2024 Iron Fit. Todos os direitos reservados.</p>
-        <p>GitHub: dev-DanielSilva</p>
-    </footer>
+        <div class="form-container">
+            <h1>Faça o seu login</h1>
+            <form action="index.php" method="post">
+                <input type="email" name="e-mail" placeholder="Digite o seu email" required>
+                <input type="password" name="senha" placeholder="Digite a sua senha" required>
+                <button class="btn-login">LOGAR</button>
+                <?php if (isset($_GET['error'])): ?>
+                    <span class="msg_error"> <i class="fas fa-exclamation-circle"></i> Tentativa Inválida</span>
+                <?php endif; ?>
+            </form>
+        </div>
 </body>
 
 </html>
