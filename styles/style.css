@@ -22,7 +22,7 @@ nav {
 }
 
 .logo img {
-    height: 90px; /* Ajusta a altura para garantir melhor alinhamento */
+    height: 80px; /* Ajusta a altura para garantir melhor alinhamento */
     margin-right: 10px; /* Espaçamento entre a logo e o título */
     display: block; /* Remove espaçamentos indesejados de imagem */
 }
@@ -91,9 +91,11 @@ form{
 }
 
 .produto img {
-    width: 150px; /* Ajuste o tamanho conforme necessário */
-    height: 150px;
+    width: 200px; /* Ajuste o tamanho conforme necessário */
+    height: 200px;
     margin-bottom: 10px; /* Espaço entre a imagem e o nome */
+    border: 1px solid #02416D;
+    border-radius: 10%;
 }
 
 .produto p {

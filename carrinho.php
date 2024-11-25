@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
@@ -26,26 +26,37 @@
                 <th>Preço (R$)</th>
             </tr>
             <?php
-            $produtos = [
-                'anilhas' => ['nome' => 'Anilhas', 'imagem' => 'assets/anilhas.png'],
-                'barraReta' => ['nome' => 'Barra Reta', 'imagem' => 'assets/barraReta.png'],
-                'halter' => ['nome' => 'Kit Halteres', 'imagem' => 'assets/halter.png'],
-                'rack' => ['nome' => 'Rack', 'imagem' => 'assets/rack.png'],
-                'barraFixa' => ['nome' => 'Barra Fixa', 'imagem' => 'assets/barraFixa.png']
-            ];
+            // Conexão com o banco de dados
+            $conn = new mysqli("localhost", "root", "", "ironfit");
+
+            if ($conn->connect_error) {
+                die("Erro de conexão: " . $conn->connect_error);
+            }
 
             $total = 0;
 
-            foreach ($_COOKIE as $produto => $valor) {
-                if (isset($produtos[$produto])) {
-                    echo "<tr>";
-                    echo "<td><img src='" . $produtos[$produto]['imagem'] . "' alt='" . $produtos[$produto]['nome'] . "' width='100' height='100'></td>";
-                    echo "<td>" . $produtos[$produto]['nome'] . "</td>";
-                    echo "<td>" . number_format($valor, 2, ',', '.') . "</td>";
-                    echo "</tr>";
-                    $total += $valor;
+            // Loop pelos cookies para identificar os produtos
+            foreach ($_COOKIE as $idProduto => $valor) {
+                if (is_numeric($idProduto)) {
+                    // Consulta o banco para obter informações do produto
+                    $stmt = $conn->prepare("SELECT nomeProduto, nomeImagem FROM produto WHERE idProduto = ?");
+                    $stmt->bind_param("i", $idProduto);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    if ($result->num_rows > 0) {
+                        $produto = $result->fetch_assoc();
+                        echo "<tr>";
+                        echo "<td><img src='assets/" . htmlspecialchars($produto['nomeImagem']) . "' alt='" . htmlspecialchars($produto['nomeProduto']) . "' width='100' height='100'></td>";
+                        echo "<td>" . htmlspecialchars($produto['nomeProduto']) . "</td>";
+                        echo "<td>R$ " . number_format($valor, 2, ',', '.') . "</td>";
+                        echo "</tr>";
+                        $total += $valor;
+                    }
                 }
             }
+
+            $conn->close();
             ?>
 
             <tr>
@@ -54,7 +65,7 @@
             </tr>
         </table>
         <div class="button-container">
-            <a href="index.php"><button>Voltar para Produtos</button></a>
+            <a href="select.php"><button>Voltar para Produtos</button></a>
         </div>
     </main>
     <footer>
