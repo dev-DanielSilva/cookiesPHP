@@ -1,26 +1,3 @@
-<?php
-// Verifica se o formulário foi enviado
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Substitua com as credenciais de login corretas e com a senha criptografada usando MD5
-    $usuarioCorreto = 'exemplo@gmail.com';
-    $senhaCorreta = md5('123'); // senha em MD5
-
-    // Obtém os valores do formulário
-    $email = $_POST['e-mail'];
-    $senha = md5($_POST['senha']); // Criptografa a senha em MD5
-
-    if ($email === $usuarioCorreto && $senha === $senhaCorreta) {
-
-        header('Location: select.php');
-        exit();
-    } else {
-        // Redireciona de volta para o login com uma mensagem de erro
-        header('Location: index.php?error=1');
-        exit();
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -39,9 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="form-container">
             <h1>Faça o seu login</h1>
-            <form action="index.php" method="post">
-                <input type="email" name="e-mail" placeholder="Digite o seu email" required>
-                <input type="password" name="senha" placeholder="Digite a sua senha" required>
+            <form action="login_validate.php" method="post">
+                <input type="text" name="username" placeholder="Digite o nome do usuário" required>
+                <input type="password" name="password" placeholder="Digite a senha" required>
                 <button class="btn-login">LOGAR</button>
                 <?php if (isset($_GET['error'])): ?>
                     <span class="msg_error"> <i class="fas fa-exclamation-circle"></i> Tentativa Inválida</span>

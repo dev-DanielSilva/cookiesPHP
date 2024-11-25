@@ -1,4 +1,12 @@
 <?php
+session_start(); // Inicia a sessão ou retoma a sessão existente
+
+// Verifica se o usuário está autenticado
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php"); // Redireciona para a página de login se não estiver autenticado
+    exit(); // Garante que o redirecionamento ocorra e o script pare aqui
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($_POST['produtos'] as $produto => $valor) {
         setcookie($produto, $valor, time() + 20);
@@ -75,7 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php
         $conn->close();
         ?>
-
+        <div class="logout">
+            <a href='logout.php'>Logout</a>
+        </div>
     </main>
     <footer>
         <p>&copy; 2024 Iron Fit. Todos os direitos reservados.</p>
