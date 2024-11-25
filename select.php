@@ -1,14 +1,12 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['produtos'])) {
-    foreach ($_POST['produtos'] as $idProduto => $valor) {
-        // Armazena os produtos selecionados em cookies
-        setcookie($idProduto, $valor, time() + 20, "/"); // Expira em 1 hora
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    foreach ($_POST['produtos'] as $produto => $valor) {
+        setcookie($produto, $valor, time() + 20);
     }
-    header("Location: carrinho.php"); // Redireciona para o carrinho
+    header("Location: carrinho.php");
     exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt-br">
