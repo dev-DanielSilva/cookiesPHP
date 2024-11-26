@@ -1,4 +1,12 @@
 <?php
+session_start(); // Inicia a sessão ou retoma a sessão existente
+
+// Verifica se o usuário está autenticado
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: index.php"); // Redireciona para a página de login se não estiver autenticado
+    exit(); // Garante que o redirecionamento ocorra e o script pare aqui
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($_POST['produtos'] as $produto => $valor) {
         setcookie($produto, $valor, time() + 20);
@@ -15,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css">
-    <title>Document</title>
+    <title>Produtos</title>
 </head>
 
 <body>
@@ -29,40 +37,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </nav>
     <main>
         <h1>Produtos</h1>
+        <?php
+        // Conexão com o banco de dados
+        $host = "localhost";
+        $user = "root";
+        $password = "";
+        $dbname = "ironfit";
+
+        $conn = new mysqli($host, $user, $password, $dbname);
+
+        if ($conn->connect_error) {
+            die("Erro de conexão: " . $conn->connect_error);
+        }
+
+        // Consulta para buscar os produtos
+        $sql = "SELECT idProduto, nomeProduto, valor, nomeImagem FROM produto";
+        $result = $conn->query($sql);
+        ?>
+
         <form method="POST" action="select.php">
             <div id="produtos">
-                <!-- Produtos individuais -->
-                <div class="produto">
-                    <img src="assets/anilhas.png" alt="">
-                    <p>Anilhas</p>
-                    <input type="checkbox" name="produtos[anilhas]" value="250.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/barraReta.png" alt="">
-                    <p>Barra Reta</p>
-                    <input type="checkbox" name="produtos[barrareta]" value="120.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/halter.png" alt="">
-                    <p>Kit Halteres</p>
-                    <input type="checkbox" name="produtos[halter]" value="200.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/rack.png" alt="">
-                    <p>Rack</p>
-                    <input type="checkbox" name="produtos[rack]" value="500.00">
-                </div>
-                <div class="produto">
-                    <img src="assets/barraFixa.png" alt="">
-                    <p>Barra Fixa</p>
-                    <input type="checkbox" name="produtos[barrafixa]" value="150.00">
-                </div>
+                <?php
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        ?>
+                        <div class="produto">
+                            <img src="assets/<?php echo htmlspecialchars($row['nomeImagem']); ?>"
+                                alt="<?php echo htmlspecialchars($row['nomeProduto']); ?>">
+                            <p><?php echo htmlspecialchars($row['nomeProduto']); ?></p>
+                            <input type="checkbox" name="produtos[<?php echo htmlspecialchars($row['idProduto']); ?>]"
+                                value="<?php echo htmlspecialchars($row['valor']); ?>">
+                        </div>
+                        <?php
+                    }
+                } else {
+                    echo "<p>Nenhum produto encontrado.</p>";
+                }
+                ?>
             </div>
             <div class="button-container">
                 <button type="submit">Adicionar ao Carrinho</button>
             </div>
-            
         </form>
+
+        <?php
+        $conn->close();
+        ?>
+        <div class="logout">
+            <a href='logout.php'>Logout</a>
+        </div>
     </main>
     <footer>
         <p>&copy; 2024 Iron Fit. Todos os direitos reservados.</p>

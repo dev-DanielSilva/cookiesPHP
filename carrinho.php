@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css">
@@ -27,54 +27,35 @@
             </tr>
             <?php
             // Conexão com o banco de dados
-            $servername = "localhost"; 
-            $username = "root"; 
-            $password = "";   
-            $dbname = "ironfit";       
+            $conn = new mysqli("localhost", "root", "", "ironfit");
 
-            // Cria a conexão
-            $conn = new mysqli($servername, $username, $password, $dbname);
-
-            // Verifica a conexão
             if ($conn->connect_error) {
-                die("Falha na conexão: " . $conn->connect_error);
-            }
-
-            // Consulta para obter os produtos
-            $sql = "SELECT nomeProduto, nomeImagem FROM produto";
-            $result = $conn->query($sql);
-
-            // Inicializa o array de produtos
-            $produtos = [];
-
-            // Verifica se há resultados e os adiciona ao array
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    // Usa o nome como chave e armazena nome e imagem no array
-                    $produtos[strtolower(str_replace(' ', '', $row['nomeProduto']))] = [
-                        'nome' => $row['nomeProduto'],
-                        'imagem' => $row['nomeImagem']
-                    ];
-                }
-            } else {
-                echo "Nenhum produto encontrado.";
+                die("Erro de conexão: " . $conn->connect_error);
             }
 
             $total = 0;
 
-            // Loop pelos cookies para exibir os produtos selecionados
-            foreach ($_COOKIE as $produto => $valor) {
-                if (isset($produtos[$produto])) {
-                    echo "<tr>";
-                    echo "<td><img src='assets/" . $produtos[$produto]['imagem'] . "' alt='" . $produtos[$produto]['nome'] . "' width='100' height='100'></td>";
-                    echo "<td>" . $produtos[$produto]['nome'] . "</td>";
-                    echo "<td>" . number_format($valor, 2, ',', '.') . "</td>";
-                    echo "</tr>";
-                    $total += $valor;
+            // Loop pelos cookies para identificar os produtos
+            foreach ($_COOKIE as $idProduto => $valor) {
+                if (is_numeric($idProduto)) {
+                    // Consulta o banco para obter informações do produto
+                    $stmt = $conn->prepare("SELECT nomeProduto, nomeImagem FROM produto WHERE idProduto = ?");
+                    $stmt->bind_param("i", $idProduto);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    if ($result->num_rows > 0) {
+                        $produto = $result->fetch_assoc();
+                        echo "<tr>";
+                        echo "<td><img src='assets/" . htmlspecialchars($produto['nomeImagem']) . "' alt='" . htmlspecialchars($produto['nomeProduto']) . "' width='100' height='100'></td>";
+                        echo "<td>" . htmlspecialchars($produto['nomeProduto']) . "</td>";
+                        echo "<td>R$ " . number_format($valor, 2, ',', '.') . "</td>";
+                        echo "</tr>";
+                        $total += $valor;
+                    }
                 }
             }
 
-            // Fecha a conexão com o banco de dados
             $conn->close();
             ?>
 
