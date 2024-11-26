@@ -10,7 +10,6 @@ Este projeto é uma simulação de um carrinho de compras para a loja fictícia 
 - **Seleção de Produtos**: permite ao usuário selecionar produtos para adicionar ao carrinho.
 - **Visualização do Carrinho**: exibe os produtos selecionados, com nome, imagem e preço, em uma tabela.
 - **Totalização**: calcula e exibe o valor total dos produtos no carrinho.
-- **Remoção dos Cookies**: permite limpar os produtos selecionados ao remover os cookies.
 
 ## Pré-requisitos
 - **Servidor Web com suporte para PHP** (como Apache ou Nginx) ou servidor PHP embutido.
